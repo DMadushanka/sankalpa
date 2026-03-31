@@ -973,7 +973,7 @@
             }
         }
 
-        function downloadWishCard(btn) {
+        async function downloadWishCard(btn) {
             const card = btn.closest('.wish-card');
             const siText = card.querySelector('.si-content').innerText;
             const enText = card.querySelector('.en-content').innerText;
@@ -983,120 +983,126 @@
             btn.innerHTML = 'සාදමින්...';
             btn.disabled = true;
 
-            const canvas = document.getElementById('gen-canvas');
-            const ctx = canvas.getContext('2d');
+            try {
+                const canvas = document.createElement('canvas'); // Work on a fresh canvas
+                const ctx = canvas.getContext('2d');
+                canvas.width = 1080;
+                canvas.height = 1350;
 
-            // Correctly size the canvas each time
-            canvas.width = 1080;
-            canvas.height = 1350;
+                // Load Template Image with CrossOrigin Fix
+                const loadImg = (src) => new Promise((resolve, reject) => {
+                    const img = new Image();
+                    img.crossOrigin = "anonymous";
+                    img.onload = () => resolve(img);
+                    img.onerror = () => reject(new Error("Image Load Failed: " + src));
+                    img.src = src;
+                });
 
-            // 1. Draw User Photo as Background
-            if (userProfileImg) {
-                const aspect = canvas.width / canvas.height;
-                const imgAspect = userProfileImg.width / userProfileImg.height;
-                let drawW, drawH, drawX, drawY;
-
-                if (imgAspect > aspect) {
-                    drawH = canvas.height;
-                    drawW = canvas.height * imgAspect;
-                    drawX = (canvas.width - drawW) / 2;
-                    drawY = 0;
-                } else {
-                    drawW = canvas.width;
-                    drawH = canvas.width / imgAspect;
-                    drawX = 0;
-                    drawY = (canvas.height - drawH) / 2;
+                // 1. Draw Background
+                let bgToDraw;
+                try {
+                    bgToDraw = userProfileImg || await loadImg('template.png');
+                } catch(e) {
+                    // Fallback to Solid Gradient if everything fails
+                    ctx.fillStyle = "#1a0a00";
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
                 }
-                ctx.drawImage(userProfileImg, drawX, drawY, drawW, drawH);
-            } else {
-                ctx.drawImage(templateBgImg, 0, 0, canvas.width, canvas.height);
-            }
 
-            // 2. Lighting Bloom at top (Uses Custom Color)
-            const lighting1 = ctx.createRadialGradient(canvas.width / 2, 150, 0, canvas.width / 2, 150, 400);
-            lighting1.addColorStop(0, `${accentColor}55`); 
-            lighting1.addColorStop(1, 'rgba(26, 10, 0, 0)');
-            ctx.fillStyle = lighting1;
-            ctx.fillRect(0, 0, canvas.width, 600);
-
-            // 3. Dark Gradient Overlay
-            const gradient1 = ctx.createLinearGradient(0, 0, 0, canvas.height);
-            gradient1.addColorStop(0, 'rgba(26, 10, 0, 0.4)');
-            gradient1.addColorStop(0.3, 'rgba(26, 10, 0, 0.15)');
-            gradient1.addColorStop(1, 'rgba(26, 10, 0, 1)');
-            ctx.fillStyle = gradient1;
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            // 4. Header Titles (Sinhala & English) with Gradient
-            ctx.textAlign = 'center';
-            ctx.shadowColor = 'rgba(0, 0, 0, 0.4)';
-            ctx.shadowBlur = 15;
-            const titleG = ctx.createLinearGradient(0, 60, 0, 200);
-            titleG.addColorStop(0, '#FFFFFF');
-            titleG.addColorStop(0.5, accentColor);
-            titleG.addColorStop(1, '#FFFFFF');
-            ctx.fillStyle = titleG;
-
-            ctx.font = '700 58px "Noto Sans Sinhala"';
-            ctx.fillText("සුබ අලුත් අවුරුද්දක් වේවා!..", canvas.width / 2, 100);
-            ctx.font = '800 54px "Outfit"';
-            ctx.fillText("Happy Sinhala & Tamil New Year", canvas.width / 2, 180);
-            ctx.shadowBlur = 0;
-
-            // 5. Wishes Centered
-            ctx.fillStyle = '#FFFFFF';
-            ctx.font = '700 48px "Noto Sans Sinhala"';
-            const wrapT = (text, x, y, maxWidth, lineHeight) => {
-                const words = text.split(' ');
-                let line = '';
-                for(let n = 0; n < words.length; n++) {
-                    let testL = line + words[n] + ' ';
-                    if (ctx.measureText(testL).width > maxWidth && n > 0) {
-                        ctx.fillText(line, x, y); line = words[n] + ' '; y += lineHeight;
-                    } else { line = testL; }
+                if (bgToDraw) {
+                    const aspect = canvas.width / canvas.height;
+                    const imgAspect = bgToDraw.width / bgToDraw.height;
+                    let drawW, drawH, drawX, drawY;
+                    if (imgAspect > aspect) {
+                        drawH = canvas.height; drawW = canvas.height * imgAspect;
+                        drawX = (canvas.width - drawW) / 2; drawY = 0;
+                    } else {
+                        drawW = canvas.width; drawH = canvas.width / imgAspect;
+                        drawX = 0; drawY = (canvas.height - drawH) / 2;
+                    }
+                    ctx.drawImage(bgToDraw, drawX, drawY, drawW, drawH);
                 }
-                ctx.fillText(line, x, y); return y + lineHeight;
-            }
-            let nY = wrapT(siText, canvas.width / 2, canvas.height / 2 - 50, 900, 75);
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
-            ctx.font = 'italic 400 34px "Outfit"';
-            wrapT(enText, canvas.width / 2, nY + 40, 950, 52);
 
-            // 6. Generate Blob & Show Modal (Bulletproof for Mobile)
-            canvas.toBlob((blob) => {
-                const url = URL.createObjectURL(blob);
+                // 2. Overlays
+                const lighting = ctx.createRadialGradient(canvas.width / 2, 150, 0, canvas.width / 2, 150, 400);
+                lighting.addColorStop(0, `${accentColor}77`); lighting.addColorStop(1, 'rgba(0,0,0,0)');
+                ctx.fillStyle = lighting; ctx.fillRect(0,0, canvas.width, 600);
+
+                const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+                grad.addColorStop(0, 'rgba(0,0,0,0.4)'); grad.addColorStop(0.3, 'rgba(0,0,0,0.1)'); grad.addColorStop(1, 'rgba(0,0,0,1)');
+                ctx.fillStyle = grad; ctx.fillRect(0,0, canvas.width, canvas.height);
+
+                // 3. Titles
+                ctx.textAlign = 'center';
+                const tG = ctx.createLinearGradient(0, 50, 0, 200);
+                tG.addColorStop(0, '#FFF'); tG.addColorStop(0.5, accentColor); tG.addColorStop(1, '#FFF');
+                ctx.fillStyle = tG;
+                ctx.shadowColor = 'rgba(0,0,0,0.6)'; ctx.shadowBlur = 20;
+
+                ctx.font = 'bold 70px "Noto Sans Sinhala"';
+                ctx.fillText("සුබ අලුත් අවුරුද්දක් වේවා!..", canvas.width / 2, 110);
+                ctx.font = '800 60px "Outfit"';
+                ctx.fillText("Happy Sinhala & Tamil New Year", canvas.width / 2, 190);
+                ctx.shadowBlur = 0;
+
+                // 4. Content
+                ctx.fillStyle = '#FFF'; ctx.font = '700 48px "Noto Sans Sinhala"';
+                const wrap = (t, x, y, mW, lH) => {
+                    const words = t.split(' '); let line = '';
+                    for(let n=0; n<words.length; n++) {
+                        let test = line + words[n] + ' ';
+                        if (ctx.measureText(test).width > mW && n > 0) {
+                            ctx.fillText(line, x, y); line = words[n] + ' '; y += lH;
+                        } else { line = test; }
+                    }
+                    ctx.fillText(line, x, y); return y + lH;
+                }
+                let nextY = wrap(siText, canvas.width / 2, canvas.height / 2 - 20, 950, 75);
+                ctx.fillStyle = 'rgba(255,255,255,0.85)'; ctx.font = 'italic 400 36px "Outfit"';
+                wrap(enText, canvas.width / 2, nextY + 40, 980, 55);
+
+                // 5. Output Image
+                const dataURL = canvas.toDataURL('image/png', 0.9);
                 const previewImg = document.getElementById('preview-img');
-                const downloadBtn = document.getElementById('modal-download-btn');
-                const shareBtn = document.getElementById('modal-share-btn');
-                
-                previewImg.src = url;
+                previewImg.src = dataURL;
                 document.getElementById('download-modal').classList.add('active');
 
-                // Sniffer for Facebook app
+                // Sniffer
+                const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
                 if (navigator.userAgent.includes("FBAV") || navigator.userAgent.includes("Messenger")) {
                     document.getElementById('fb-tip').style.display = 'block';
                 }
 
-                // Modal Download Button Fix
-                downloadBtn.onclick = () => {
-                    const l = document.createElement('a'); 
-                    l.href = url; l.download = 'AvuruduGreeting.png';
-                    document.body.appendChild(l); l.click(); 
-                    document.body.removeChild(l);
+                // DOWNLOAD BTN FIX
+                document.getElementById('modal-download-btn').onclick = () => {
+                    const l = document.createElement('a');
+                    l.href = dataURL; l.download = 'Greeting.png';
+                    document.body.appendChild(l); l.click(); document.body.removeChild(l);
+                    showToast("Downloaded! Check your Gallery.");
                 };
 
-                // Share Button (Mobile Only Feature)
-                shareBtn.onclick = async () => {
-                    if (navigator.share) {
+                // SHARE BTN FIX
+                document.getElementById('modal-share-btn').onclick = async () => {
+                    try {
+                        const blob = await (await fetch(dataURL)).blob();
                         const file = new File([blob], 'Greeting.png', { type: 'image/png' });
-                        try { await navigator.share({ files: [file], title: 'My New Year Wish' }); }
-                        catch (e) { showToast("Share error or cancelled."); }
-                    } else { showToast("Sharing not supported in this browser."); }
+                        if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+                            await navigator.share({ files: [file], title: 'Happy New Year' });
+                        } else {
+                            // Fallback: Open in new window
+                            window.open(dataURL, '_blank');
+                        }
+                    } catch (e) {
+                         window.open(dataURL, '_blank');
+                    }
                 };
 
-            }, 'image/png');
-
-            setTimeout(() => { btn.innerHTML = originalText; btn.disabled = false; }, 1000);
+            } catch (error) {
+                console.error(error);
+                showToast("Error creating image. Please retry.");
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
         }
 
         function closeModal() {
