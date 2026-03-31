@@ -688,9 +688,20 @@
     <div id="download-modal">
         <div class="close-modal" onclick="closeModal()">✕</div>
         <img id="preview-img" src="" alt="Greeting Preview">
+        
+        <div class="modal-actions" style="display: flex; gap: 15px; margin-top: 20px; z-index: 2010;">
+            <button id="modal-download-btn" class="download-card-btn" style="padding: 15px 25px; font-size: 1rem;">
+                💾 Download Image
+            </button>
+            <button id="modal-share-btn" class="copy-btn" style="padding: 15px 25px; border: 2px solid #FFD700; color: #FFD700;">
+                📤 Share
+            </button>
+        </div>
+
         <div class="modal-instruction">
-            📥 පින්තූරය save කිරීම සදහා එය මත ස්පර්ශ කරගෙන සිටින්න (Download) <br>
-            <span style="font-size: 0.7rem; opacity: 0.7;">Long press on the image to save to your Gallery</span>
+            📥 පින්තූරය save කිරීම සඳහා එය මත ස්පර්ශ කරගෙන සිටින්න (Long Press) <br>
+            <span style="font-size: 0.7rem; opacity: 0.8; display: block; margin-top: 5px;">සමහර දුරකථන වල Download Button එක මඟින්ද සුරැකිය හැක.</span>
+            <span id="fb-tip" style="display: none; font-size: 0.7rem; color: #ffeb3b; margin-top: 5px;">Facebook App එකේ නම්, උඩ තියෙන "..." ක්ලික් කර "Open in Browser" තෝරන්න.</span>
         </div>
     </div>
 
@@ -963,7 +974,6 @@
         }
 
         function downloadWishCard(btn) {
-            // Get the card containing this button
             const card = btn.closest('.wish-card');
             const siText = card.querySelector('.si-content').innerText;
             const enText = card.querySelector('.en-content').innerText;
@@ -975,6 +985,10 @@
 
             const canvas = document.getElementById('gen-canvas');
             const ctx = canvas.getContext('2d');
+
+            // Correctly size the canvas each time
+            canvas.width = 1080;
+            canvas.height = 1350;
 
             // 1. Draw User Photo as Background
             if (userProfileImg) {
@@ -999,92 +1013,95 @@
             }
 
             // 2. Lighting Bloom at top (Uses Custom Color)
-            const lighting = ctx.createRadialGradient(canvas.width / 2, 150, 0, canvas.width / 2, 150, 400);
-            lighting.addColorStop(0, `${accentColor}4D`); // 30% transparency
-            lighting.addColorStop(1, 'rgba(26, 10, 0, 0)');
-            ctx.fillStyle = lighting;
+            const lighting1 = ctx.createRadialGradient(canvas.width / 2, 150, 0, canvas.width / 2, 150, 400);
+            lighting1.addColorStop(0, `${accentColor}55`); 
+            lighting1.addColorStop(1, 'rgba(26, 10, 0, 0)');
+            ctx.fillStyle = lighting1;
             ctx.fillRect(0, 0, canvas.width, 600);
 
             // 3. Dark Gradient Overlay
-            const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-            gradient.addColorStop(0, 'rgba(26, 10, 0, 0.4)');
-            gradient.addColorStop(0.3, 'rgba(26, 10, 0, 0.15)');
-            gradient.addColorStop(1, 'rgba(26, 10, 0, 1)');
-            ctx.fillStyle = gradient;
+            const gradient1 = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            gradient1.addColorStop(0, 'rgba(26, 10, 0, 0.4)');
+            gradient1.addColorStop(0.3, 'rgba(26, 10, 0, 0.15)');
+            gradient1.addColorStop(1, 'rgba(26, 10, 0, 1)');
+            ctx.fillStyle = gradient1;
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // 4. Draw Header Titles (Sinhala & English) with Gradient
+            // 4. Header Titles (Sinhala & English) with Gradient
             ctx.textAlign = 'center';
             ctx.shadowColor = 'rgba(0, 0, 0, 0.4)';
             ctx.shadowBlur = 15;
+            const titleG = ctx.createLinearGradient(0, 60, 0, 200);
+            titleG.addColorStop(0, '#FFFFFF');
+            titleG.addColorStop(0.5, accentColor);
+            titleG.addColorStop(1, '#FFFFFF');
+            ctx.fillStyle = titleG;
 
-            // Create Gradient based on accentColor
-            const titleGradient = ctx.createLinearGradient(0, 60, 0, 200);
-            titleGradient.addColorStop(0, '#FFFFFF');
-            titleGradient.addColorStop(0.5, accentColor);
-            titleGradient.addColorStop(1, '#FFFFFF');
-
-            ctx.fillStyle = titleGradient;
-
-            // Sinhala Header Title
             ctx.font = '700 58px "Noto Sans Sinhala"';
             ctx.fillText("සුබ අලුත් අවුරුද්දක් වේවා!..", canvas.width / 2, 100);
-
-            // English Header Title
             ctx.font = '800 54px "Outfit"';
             ctx.fillText("Happy Sinhala & Tamil New Year", canvas.width / 2, 180);
-
             ctx.shadowBlur = 0;
 
-            // 5. Draw Wishes Centered
+            // 5. Wishes Centered
             ctx.fillStyle = '#FFFFFF';
             ctx.font = '700 48px "Noto Sans Sinhala"';
-            
-            const wrapText = (text, x, y, maxWidth, lineHeight) => {
+            const wrapT = (text, x, y, maxWidth, lineHeight) => {
                 const words = text.split(' ');
                 let line = '';
                 for(let n = 0; n < words.length; n++) {
-                    let testLine = line + words[n] + ' ';
-                    if (ctx.measureText(testLine).width > maxWidth && n > 0) {
-                        ctx.fillText(line, x, y);
-                        line = words[n] + ' ';
-                        y += lineHeight;
-                    } else {
-                        line = testLine;
-                    }
+                    let testL = line + words[n] + ' ';
+                    if (ctx.measureText(testL).width > maxWidth && n > 0) {
+                        ctx.fillText(line, x, y); line = words[n] + ' '; y += lineHeight;
+                    } else { line = testL; }
                 }
-                ctx.fillText(line, x, y);
-                return y + lineHeight;
+                ctx.fillText(line, x, y); return y + lineHeight;
             }
-
-            let nextY = wrapText(siText, canvas.width / 2, canvas.height / 2 - 50, 900, 75);
-
+            let nY = wrapT(siText, canvas.width / 2, canvas.height / 2 - 50, 900, 75);
             ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
             ctx.font = 'italic 400 34px "Outfit"';
-            wrapText(enText, canvas.width / 2, nextY + 40, 950, 52);
+            wrapT(enText, canvas.width / 2, nY + 40, 950, 52);
 
-            // Process Download & Preview
-            const dataUrl = canvas.toDataURL('image/png');
-            
-            // Show Preview Modal (Better for Mobile/Facebook)
-            document.getElementById('preview-img').src = dataUrl;
-            document.getElementById('download-modal').classList.add('active');
+            // 6. Generate Blob & Show Modal (Bulletproof for Mobile)
+            canvas.toBlob((blob) => {
+                const url = URL.createObjectURL(blob);
+                const previewImg = document.getElementById('preview-img');
+                const downloadBtn = document.getElementById('modal-download-btn');
+                const shareBtn = document.getElementById('modal-share-btn');
+                
+                previewImg.src = url;
+                document.getElementById('download-modal').classList.add('active');
 
-            // Still attempt auto-download for Desktop users
-            const link = document.createElement('a');
-            link.download = `CustomGreeting_${new Date().getTime()}.png`;
-            link.href = dataUrl;
-            link.click();
+                // Sniffer for Facebook app
+                if (navigator.userAgent.includes("FBAV") || navigator.userAgent.includes("Messenger")) {
+                    document.getElementById('fb-tip').style.display = 'block';
+                }
 
-            setTimeout(() => {
-                btn.innerHTML = originalText;
-                btn.disabled = false;
-                showToast("පින්තූරය සූදානම්! සුරැකීමට ස්පර්ශ කරගෙන සිටින්න.");
-            }, 1000);
+                // Modal Download Button Fix
+                downloadBtn.onclick = () => {
+                    const l = document.createElement('a'); 
+                    l.href = url; l.download = 'AvuruduGreeting.png';
+                    document.body.appendChild(l); l.click(); 
+                    document.body.removeChild(l);
+                };
+
+                // Share Button (Mobile Only Feature)
+                shareBtn.onclick = async () => {
+                    if (navigator.share) {
+                        const file = new File([blob], 'Greeting.png', { type: 'image/png' });
+                        try { await navigator.share({ files: [file], title: 'My New Year Wish' }); }
+                        catch (e) { showToast("Share error or cancelled."); }
+                    } else { showToast("Sharing not supported in this browser."); }
+                };
+
+            }, 'image/png');
+
+            setTimeout(() => { btn.innerHTML = originalText; btn.disabled = false; }, 1000);
         }
 
         function closeModal() {
             document.getElementById('download-modal').classList.remove('active');
+            document.getElementById('fb-tip').style.display = 'none';
         }
 
         function showToast(msg) {
