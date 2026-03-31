@@ -984,69 +984,58 @@
             btn.disabled = true;
 
             try {
-                const canvas = document.createElement('canvas'); // Work on a fresh canvas
+                // 1. Create Canvas
+                const canvas = document.createElement('canvas');
                 const ctx = canvas.getContext('2d');
                 canvas.width = 1080;
                 canvas.height = 1350;
 
-                // Load Template Image with CrossOrigin Fix
-                const loadImg = (src) => new Promise((resolve, reject) => {
-                    const img = new Image();
-                    img.crossOrigin = "anonymous";
-                    img.onload = () => resolve(img);
-                    img.onerror = () => reject(new Error("Image Load Failed: " + src));
-                    img.src = src;
-                });
-
-                // 1. Draw Background
-                let bgToDraw;
-                try {
-                    bgToDraw = userProfileImg || await loadImg('template.png');
-                } catch(e) {
-                    // Fallback to Solid Gradient if everything fails
-                    ctx.fillStyle = "#1a0a00";
-                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                // Pre-load background (Crucial for sync flow)
+                let bgLayer;
+                if (userProfileImg) {
+                    bgLayer = userProfileImg;
+                } else {
+                    bgLayer = new Image();
+                    bgLayer.src = 'template.png';
+                    await new Promise((r) => bgLayer.onload = r);
                 }
 
-                if (bgToDraw) {
-                    const aspect = canvas.width / canvas.height;
-                    const imgAspect = bgToDraw.width / bgToDraw.height;
-                    let drawW, drawH, drawX, drawY;
-                    if (imgAspect > aspect) {
-                        drawH = canvas.height; drawW = canvas.height * imgAspect;
-                        drawX = (canvas.width - drawW) / 2; drawY = 0;
-                    } else {
-                        drawW = canvas.width; drawH = canvas.width / imgAspect;
-                        drawX = 0; drawY = (canvas.height - drawH) / 2;
-                    }
-                    ctx.drawImage(bgToDraw, drawX, drawY, drawW, drawH);
+                // Draw Logic
+                const aspect = canvas.width / canvas.height;
+                const imgAspect = bgLayer.width / bgLayer.height;
+                let dW, dH, dX, dY;
+                if (imgAspect > aspect) {
+                    dH = canvas.height; dW = canvas.height * imgAspect;
+                    dX = (canvas.width - dW) / 2; dY = 0;
+                } else {
+                    dW = canvas.width; dH = canvas.width / imgAspect;
+                    dX = 0; dY = (canvas.height - dH) / 2;
                 }
+                ctx.drawImage(bgLayer, dX, dY, dW, dH);
 
-                // 2. Overlays
-                const lighting = ctx.createRadialGradient(canvas.width / 2, 150, 0, canvas.width / 2, 150, 400);
-                lighting.addColorStop(0, `${accentColor}77`); lighting.addColorStop(1, 'rgba(0,0,0,0)');
-                ctx.fillStyle = lighting; ctx.fillRect(0,0, canvas.width, 600);
+                // Overlays
+                const bloom = ctx.createRadialGradient(canvas.width / 2, 150, 0, canvas.width / 2, 150, 450);
+                bloom.addColorStop(0, `${accentColor}88`); bloom.addColorStop(1, 'rgba(0,0,0,0)');
+                ctx.fillStyle = bloom; ctx.fillRect(0,0, canvas.width, 600);
+                const dark = ctx.createLinearGradient(0, 0, 0, canvas.height);
+                dark.addColorStop(0, 'rgba(0,0,0,0.3)'); dark.addColorStop(0.3, 'rgba(0,0,0,0.1)'); dark.addColorStop(1, 'rgba(0,0,0,1)');
+                ctx.fillStyle = dark; ctx.fillRect(0,0, canvas.width, canvas.height);
 
-                const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
-                grad.addColorStop(0, 'rgba(0,0,0,0.4)'); grad.addColorStop(0.3, 'rgba(0,0,0,0.1)'); grad.addColorStop(1, 'rgba(0,0,0,1)');
-                ctx.fillStyle = grad; ctx.fillRect(0,0, canvas.width, canvas.height);
-
-                // 3. Titles
+                // Titles
                 ctx.textAlign = 'center';
-                const tG = ctx.createLinearGradient(0, 50, 0, 200);
-                tG.addColorStop(0, '#FFF'); tG.addColorStop(0.5, accentColor); tG.addColorStop(1, '#FFF');
-                ctx.fillStyle = tG;
-                ctx.shadowColor = 'rgba(0,0,0,0.6)'; ctx.shadowBlur = 20;
-
+                const titleGradient = ctx.createLinearGradient(0, 50, 0, 200);
+                titleGradient.addColorStop(0, '#FFF'); titleGradient.addColorStop(0.5, accentColor); titleGradient.addColorStop(1, '#FFF');
+                ctx.fillStyle = titleGradient;
+                ctx.shadowColor = 'rgba(0,0,0,0.7)'; ctx.shadowBlur = 20;
                 ctx.font = 'bold 70px "Noto Sans Sinhala"';
                 ctx.fillText("සුබ අලුත් අවුරුද්දක් වේවා!..", canvas.width / 2, 110);
                 ctx.font = '800 60px "Outfit"';
                 ctx.fillText("Happy Sinhala & Tamil New Year", canvas.width / 2, 190);
                 ctx.shadowBlur = 0;
 
-                // 4. Content
-                ctx.fillStyle = '#FFF'; ctx.font = '700 48px "Noto Sans Sinhala"';
-                const wrap = (t, x, y, mW, lH) => {
+                // Content
+                ctx.fillStyle = '#FFF'; ctx.font = '600 48px "Noto Sans Sinhala"';
+                const wrapText = (t, x, y, mW, lH) => {
                     const words = t.split(' '); let line = '';
                     for(let n=0; n<words.length; n++) {
                         let test = line + words[n] + ' ';
@@ -1056,49 +1045,55 @@
                     }
                     ctx.fillText(line, x, y); return y + lH;
                 }
-                let nextY = wrap(siText, canvas.width / 2, canvas.height / 2 - 20, 950, 75);
+                let nextY = wrapText(siText, canvas.width / 2, canvas.height / 2 - 30, 950, 80);
                 ctx.fillStyle = 'rgba(255,255,255,0.85)'; ctx.font = 'italic 400 36px "Outfit"';
-                wrap(enText, canvas.width / 2, nextY + 40, 980, 55);
+                wrapText(enText, canvas.width / 2, nextY + 40, 980, 55);
 
-                // 5. Output Image
-                const dataURL = canvas.toDataURL('image/png', 0.9);
+                // 2. Export to Image
+                const finalImage = canvas.toDataURL('image/png', 0.9);
+                
+                // 3. Setup Modal
                 const previewImg = document.getElementById('preview-img');
-                previewImg.src = dataURL;
+                const downloadBtn = document.getElementById('modal-download-btn');
+                const shareBtn = document.getElementById('modal-share-btn');
+                
+                previewImg.src = finalImage;
                 document.getElementById('download-modal').classList.add('active');
 
-                // Sniffer
-                const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+                // Facebook Sniffer Tip
                 if (navigator.userAgent.includes("FBAV") || navigator.userAgent.includes("Messenger")) {
                     document.getElementById('fb-tip').style.display = 'block';
                 }
 
-                // DOWNLOAD BTN FIX
-                document.getElementById('modal-download-btn').onclick = () => {
-                    const l = document.createElement('a');
-                    l.href = dataURL; l.download = 'Greeting.png';
-                    document.body.appendChild(l); l.click(); document.body.removeChild(l);
-                    showToast("Downloaded! Check your Gallery.");
+                // SYNC DOWNLOAD LINK FIX (Most Reliable for Mobile)
+                downloadBtn.onclick = (e) => {
+                    const link = document.createElement('a');
+                    link.href = finalImage;
+                    link.download = 'NewYearWish.png';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    showToast("Downloaded! Please check your Gallery/Downloads folder.");
                 };
 
-                // SHARE BTN FIX
-                document.getElementById('modal-share-btn').onclick = async () => {
-                    try {
-                        const blob = await (await fetch(dataURL)).blob();
-                        const file = new File([blob], 'Greeting.png', { type: 'image/png' });
-                        if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+                // SHARE API (Wait for user click)
+                shareBtn.onclick = async () => {
+                    if (navigator.share) {
+                        try {
+                            const blob = await (await fetch(finalImage)).blob();
+                            const file = new File([blob], 'WishCard.png', { type: 'image/png' });
                             await navigator.share({ files: [file], title: 'Happy New Year' });
-                        } else {
-                            // Fallback: Open in new window
-                            window.open(dataURL, '_blank');
+                        } catch (e) {
+                             window.open(finalImage, '_blank');
                         }
-                    } catch (e) {
-                         window.open(dataURL, '_blank');
+                    } else {
+                        window.open(finalImage, '_blank');
                     }
                 };
 
-            } catch (error) {
-                console.error(error);
-                showToast("Error creating image. Please retry.");
+            } catch (err) {
+                console.error(err);
+                showToast("Something went wrong. Please try again.");
             } finally {
                 btn.innerHTML = originalText;
                 btn.disabled = false;
