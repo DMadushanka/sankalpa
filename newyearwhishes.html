@@ -278,43 +278,67 @@
             margin-bottom: 5px;
         }
 
-        /* Color Customizer */
-        .card-customizer {
-            position: relative;
-            z-index: 2;
+        /* Download Preview Modal */
+        #download-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 2000;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            animation: fadeIn 0.4s ease;
+        }
+
+        #download-modal.active {
+            display: flex;
+        }
+
+        #download-modal img {
+            max-width: 100%;
+            max-height: 75vh;
+            border-radius: 15px;
+            box-shadow: 0 0 40px rgba(212, 175, 55, 0.4);
+            border: 2px solid var(--primary);
+        }
+
+        .modal-instruction {
+            color: #fff;
+            margin-top: 25px;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px 25px;
+            border-radius: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 0.9rem;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            color: #fff;
+            background: #ff4444;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
-            gap: 10px;
-            margin-top: 10px;
-            background: rgba(0,0,0,0.4);
-            padding: 8px 15px;
-            border-radius: 50px;
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .color-picker-label {
-            font-size: 0.75rem;
-            color: #fff;
-        }
-
-        input[type="color"] {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 25px;
-            height: 25px;
-            border: none;
-            border-radius: 50%;
+            justify-content: center;
             cursor: pointer;
-            background: none;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
 
-        input[type="color"]::-webkit-color-swatch-wrapper {
-            padding: 0;
-        }
-
-        input[type="color"]::-webkit-color-swatch {
-            border: 1px solid #fff;
-            border-radius: 50%;
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(1.1); }
+            to { opacity: 1; transform: scale(1); }
         }
 
         .wish-actions {
@@ -608,9 +632,56 @@
             .wishes-grid { grid-template-columns: 1fr; }
             .wish-actions { grid-template-columns: 1fr; }
         }
+        /* Color Customizer */
+        .card-customizer {
+            position: relative;
+            z-index: 5;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+            background: rgba(0,0,0,0.4);
+            padding: 8px 15px;
+            border-radius: 50px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .color-picker-label {
+            font-size: 0.75rem;
+            color: #fff;
+        }
+
+        input[type="color"] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 25px;
+            height: 25px;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            background: none;
+        }
+
+        input[type="color"]::-webkit-color-swatch-wrapper {
+            padding: 0;
+        }
+
+        input[type="color"]::-webkit-color-swatch {
+            border: 1px solid #fff;
+            border-radius: 50%;
+        }
     </style>
 </head>
 <body>
+
+    <div id="download-modal">
+        <div class="close-modal" onclick="closeModal()">✕</div>
+        <img id="preview-img" src="" alt="Greeting Preview">
+        <div class="modal-instruction">
+            📥 පින්තූරය සුරැකීමට එය මත ස්පර්ශ කරගෙන සිටින්න (Download) <br>
+            <span style="font-size: 0.7rem; opacity: 0.7;">Long press on the image to save to your Gallery</span>
+        </div>
+    </div>
 
     <canvas id="particle-canvas"></canvas>
 
@@ -981,8 +1052,14 @@
             ctx.font = 'italic 400 34px "Outfit"';
             wrapText(enText, canvas.width / 2, nextY + 40, 950, 52);
 
-            // Process Download
+            // Process Download & Preview
             const dataUrl = canvas.toDataURL('image/png');
+            
+            // Show Preview Modal (Better for Mobile/Facebook)
+            document.getElementById('preview-img').src = dataUrl;
+            document.getElementById('download-modal').classList.add('active');
+
+            // Still attempt auto-download for Desktop users
             const link = document.createElement('a');
             link.download = `CustomGreeting_${new Date().getTime()}.png`;
             link.href = dataUrl;
@@ -991,8 +1068,12 @@
             setTimeout(() => {
                 btn.innerHTML = originalText;
                 btn.disabled = false;
-                showToast("සාර්ථකව සාදා බාගත කළා!");
+                showToast("පින්තූරය සූදානම්! සුරැකීමට ස්පර්ශ කරගෙන සිටින්න.");
             }, 1000);
+        }
+
+        function closeModal() {
+            document.getElementById('download-modal').classList.remove('active');
         }
 
         function showToast(msg) {
