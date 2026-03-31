@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="si-LK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>නොමිලේ ඔබේ අලුත් අවුරුදු සුබ පැතුම් පත සාදා ගන්න | New Year Wish Builder</title>
+    
+    <!-- Meta Tags for SEO & Social Media -->
+    <meta name="description" content="නොමිලේ ඔබේ අලුත් අවුරුදු සුබ පැතුම් පත සාදා ගන්න. Create beautiful, personalized Sinhala & Tamil New Year greeting cards with your photo and custom messages.">
+    <meta name="keywords" content="New Year, Sinhala, Tamil, Greetings, Gift, Wish, Card Generator, Sri Lanka, Aluth Avurudu">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="./"> <!-- GitHub Pages compatible URL -->
+    <meta property="og:title" content="නොමිලේ ඔබේ අලුත් අවුරුදු සුබ පැතුම් පත සාදා ගන්න | Free New Year Card Builder">
+    <meta property="og:description" content="Create beautiful personalized New Year greeting cards with your own photo and custom wishes in Sinhala & English. Share the joy with your loved ones!">
+    <meta property="og:image" content="post.png">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:title" content="Free New Year Card Builder">
+    <meta property="twitter:image" content="post.png">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Noto+Sans+Sinhala:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #FFD700;
+            --secondary: #FF4D00;
+            --accent: #D4AF37;
+            --dark: #1A0A00;
+            --glass: rgba(255, 255, 255, 0.08);
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --font-main: 'Outfit', sans-serif;
+            --font-si: 'Noto Sans Sinhala', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--dark);
+            background-image: 
+                radial-gradient(circle at 50% 50%, #3d1400 0%, #1A0A00 100%);
+            font-family: var(--font-main);
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+        /* Decorative Background */
+        .bg-decor {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .bloom {
+            position: absolute;
+            background: radial-gradient(circle, rgba(255, 77, 0, 0.15) 0%, transparent 70%);
+            width: 600px;
+            height: 600px;
+            filter: blur(50px);
+            animation: float 20s infinite alternate;
+        }
+
+        @keyframes float {
+            0% { transform: translate(-10%, -10%); }
+            100% { transform: translate(10%, 10%); }
+        }
+
+        /* Header Section */
+        header {
+            text-align: center;
+            padding: 60px 20px;
+            opacity: 0;
+            animation: fadeInDown 1s forwards ease-out;
+        }
+
+        .title-si {
+            font-family: var(--font-si);
+            font-size: 2.8rem;
+            font-weight: 700;
+            background: linear-gradient(to bottom, #FFF, #BC9741);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .title-en {
+            font-size: 1.2rem;
+            letter-spacing: 4px;
+            color: var(--primary);
+            text-transform: uppercase;
+            font-weight: 300;
+        }
+
+        /* Particle Background Canvas */
+        #particle-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* Start Screen Styling */
+        #gift-landing {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 10;
+            padding: 40px 20px;
+            text-align: center;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .intro-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            border-radius: 40px;
+            padding: 40px;
+            box-shadow: 0 40px 100px rgba(0,0,0,0.6);
+            animation: fadeInUp 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 25px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .intro-illustration {
+            width: 100%;
+            max-width: 700px;
+            border-radius: 24px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .cta-message {
+            font-family: var(--font-si);
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(to right, #FFD700, #FFF, #B8860B);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 5px;
+        }
+
+        .cta-en {
+            font-size: 1.1rem;
+            color: rgba(255,255,255,0.8);
+            font-weight: 300;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.8; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.05); }
+        }
+
+        /* Wishes Interface */
+        #wishes-interface {
+            display: none;
+            width: 100%;
+            max-width: 1200px;
+            padding: 40px 20px;
+        }
+
+        .wishes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+            padding: 20px 0;
+        }
+
+        .wish-card {
+            background-color: var(--dark);
+            background-image: linear-gradient(to bottom, rgba(0,0,0,0.2), rgba(0,0,0,0.9)), url('template.png');
+            background-size: cover;
+            background-position: center;
+            border: 2px solid var(--primary);
+            border-radius: 24px;
+            padding: 40px 30px;
+            position: relative;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            text-align: center;
+            gap: 15px;
+            opacity: 0;
+            transform: translateY(30px);
+            min-height: 550px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+        }
+
+        /* Overlay for text clarity */
+        .wish-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to top, rgba(26, 10, 0, 1) 0%, rgba(26, 10, 0, 0.7) 40%, rgba(26, 10, 0, 0) 100%);
+            z-index: 1;
+        }
+
+        .wish-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .wish-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 30px 60px rgba(255, 215, 0, 0.25);
+            border-color: #fff;
+        }
+
+        .si-content, .en-content, .wish-actions, .edit-badge, .card-customizer {
+            position: relative;
+            z-index: 5; /* Well above the overlay */
+        }
+
+        .si-content, .en-content {
+            outline: none;
+            cursor: text;
+            transition: background 0.3s;
+            padding: 5px;
+            border-radius: 8px;
+        }
+
+        .si-content:hover, .en-content:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .si-content:focus, .en-content:focus {
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px dashed var(--primary);
+        }
+
+        .edit-badge {
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            color: var(--primary);
+            opacity: 0.6;
+            margin-bottom: 5px;
+        }
+
+        /* Color Customizer */
+        .card-customizer {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+            background: rgba(0,0,0,0.4);
+            padding: 8px 15px;
+            border-radius: 50px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .color-picker-label {
+            font-size: 0.75rem;
+            color: #fff;
+        }
+
+        input[type="color"] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 25px;
+            height: 25px;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            background: none;
+        }
+
+        input[type="color"]::-webkit-color-swatch-wrapper {
+            padding: 0;
+        }
+
+        input[type="color"]::-webkit-color-swatch {
+            border: 1px solid #fff;
+            border-radius: 50%;
+        }
+
+        .wish-actions {
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .copy-btn, .download-card-btn {
+            border: none;
+            border-radius: 12px;
+            padding: 12px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-family: var(--font-si);
+        }
+
+        .copy-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .download-card-btn {
+            background: linear-gradient(135deg, #FFD700 0%, #B8860B 100%);
+            color: #000;
+        }
+
+        .copy-btn:hover { background: rgba(255,255,255,0.2); }
+        .download-card-btn:hover { transform: scale(1.05); box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4); }
+
+        /* Decorative Background */
+        .bg-decor {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .bloom {
+            position: absolute;
+            background: radial-gradient(circle, rgba(255, 77, 0, 0.2) 0%, transparent 70%);
+            width: 800px;
+            height: 800px;
+            filter: blur(80px);
+            animation: float 25s infinite alternate ease-in-out;
+        }
+
+        .bloom-gold {
+            background: radial-gradient(circle, rgba(212, 175, 55, 0.15) 0%, transparent 70%);
+            width: 600px;
+            height: 600px;
+            animation-delay: -5s;
+        }
+
+        @keyframes float {
+            0% { transform: translate(-20%, -20%) scale(1); }
+            100% { transform: translate(20%, 20%) scale(1.1); }
+        }
+
+        /* Profile Hero Polish */
+        .profile-hero {
+            background: linear-gradient(135deg, rgba(26, 10, 0, 0.95) 0%, rgba(212, 175, 55, 0.1) 100%), url('template.png');
+            background-size: cover;
+            background-position: center;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.4), inset 0 0 20px rgba(255, 215, 0, 0.1);
+            padding: 50px 20px;
+            border-radius: 30px;
+            margin-bottom: 50px;
+            text-align: center;
+            backdrop-filter: blur(20px);
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Animations */
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .shake {
+            animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+        }
+
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-1px, 0, 0); }
+            20%, 80% { transform: translate3d(2px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+            40%, 60% { transform: translate3d(4px, 0, 0); }
+        }
+
+        .explode {
+            animation: explode 0.8s forwards;
+        }
+
+        @keyframes explode {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.5); opacity: 0.8; filter: brightness(2); }
+            100% { transform: scale(0); opacity: 0; }
+        }
+
+        /* Custom Notification */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #fff;
+            color: #000;
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-weight: 600;
+            z-index: 1000;
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .toast.active {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* Profile Section */
+        .profile-section {
+            margin-bottom: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            opacity: 0;
+            animation: fadeInDown 1s 0.5s forwards ease-out;
+        }
+
+        .profile-upload-container {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 2px solid var(--primary);
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .profile-upload-container:hover {
+            transform: scale(1.05);
+        }
+
+        #profile-preview {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .upload-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(0,0,0,0.6);
+            color: #fff;
+            font-size: 0.6rem;
+            text-align: center;
+            padding: 4px 0;
+        }
+
+        .profile-label {
+            font-family: var(--font-si);
+            color: var(--primary);
+            font-size: 0.9rem;
+        }
+
+        /* Image Generator Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            backdrop-filter: blur(10px);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: var(--dark);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            max-width: 600px;
+            width: 100%;
+            padding: 20px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        #generated-wish-image {
+            width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.2);
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #FFD700 0%, #B8860B 100%);
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            color: #000;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: var(--font-si);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 1px solid var(--glass-border);
+            padding: 12px 25px;
+            border-radius: 50px;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: var(--font-si);
+        }
+
+        .btn-primary:hover, .btn-secondary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.2);
+        }
+
+        .wish-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: auto;
+        }
+
+        .gen-img-btn {
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid var(--primary);
+            border-radius: 12px;
+            padding: 12px;
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-family: var(--font-si);
+        }
+
+        .gen-img-btn:hover {
+            background: var(--primary);
+            color: #000;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .title-si { font-size: 2rem; }
+            .gift-box-container { width: 220px; height: 220px; }
+            .wishes-grid { grid-template-columns: 1fr; }
+            .wish-actions { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="particle-canvas"></canvas>
+
+    <div class="bg-decor">
+        <div class="bloom" style="top: 0%; left: 0%;"></div>
+        <div class="bloom bloom-gold" style="bottom: 0%; right: 0%;"></div>
+    </div>
+
+    <header id="main-header" style="padding-top: 40px; padding-bottom: 20px;">
+        <h1 class="title-si">සිංහල සහ දෙමළ අලුත් අවුරුදු සුබ පැතුම් පත සාදන්න</h1>
+        <p class="title-en" style="font-size: 0.9rem; letter-spacing: 3px;">Personalized New Year Greetings</p>
+    </header>
+
+    <div id="gift-landing">
+        <div class="intro-card">
+            <img src="intro.png" alt="Intro Illustration" class="intro-illustration">
+            
+            <div style="margin: 15px 0;">
+                <h2 class="cta-message">නොමිලේ ඔබේ අලුත් අවුරුදු සුබ පැතුම් පත සාදා ගන්න</h2>
+                <p class="cta-en">Generate your New Year wishes here!</p>
+            </div>
+
+            <div class="gift-box-container" onclick="openGift()">
+                <img src="gift_box.png" alt="Gift Box" class="gift-box-image" id="mystery-box" style="width: 200px; height: 200px;">
+            </div>
+            
+            <div class="gift-label pulse-btn" id="gift-instruction" style="background: var(--primary); color: #000; font-weight: 800;">මෙතැනින් ආරම්භ කරන්න - Start Here</div>
+        </div>
+    </div>
+
+    <div id="wishes-interface">
+        <div class="profile-hero">
+            <h2 style="font-family: var(--font-si); color: var(--primary); margin-bottom: 20px;">ඔබේ රුව සහිත සුබ පැතුම් පත් සාදන්න</h2>
+            <p style="color: rgba(255,255,255,0.7); margin-bottom: 30px;">පහතින් ඔබේ ඡායාරූපයක් එක් කරන්න. එවිට සියලුම සුබ පැතුම් පත් ස්වයංක්‍රීයව ඔබ වෙනුවෙන් සැකසෙනු ඇත.</p>
+            
+            <div class="profile-section">
+                <div class="profile-upload-container" style="width: 150px; height: 150px;" onclick="document.getElementById('profile-input').click()">
+                    <img id="profile-preview" src="avatar.png" alt="Profile">
+                    <div class="upload-overlay" style="font-size: 0.8rem; padding: 8px 0;">ඡායාරූපයක් තෝරන්න</div>
+                </div>
+                <input type="file" id="profile-input" style="display: none" accept="image/*" onchange="handleProfileUpload(event)">
+                <button class="btn-primary" onclick="document.getElementById('profile-input').click()" style="margin-top: 10px;">Upload Your Photo</button>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-bottom: 40px;">
+            <p style="color: var(--primary); font-size: 1.2rem; font-family: var(--font-si); font-weight: 600;">ඔබ උදෙසාම වෙන්වූ සුවිශේෂී ප්‍රාර්ථනා</p>
+        </div>
+        
+        <div class="wishes-grid" id="wishes-grid">
+            <!-- Wishes will be injected here -->
+        </div>
+        
+        <div style="text-align: center; margin-top: 50px; padding-bottom: 100px;">
+            <button onclick="location.reload()" class="btn-secondary">නැවත මුල සිට ආරම්භ කරන්න</button>
+        </div>
+    </div>
+
+    <!-- Image Preview Modal (Optional) -->
+    <div id="image-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h2 style="font-family: var(--font-si); color: var(--primary);">බාගත කිරීමට සූදානම්...</h2>
+            <img id="generated-wish-image" src="" alt="Wish Image">
+            <div class="modal-buttons">
+                <button class="btn-primary" id="download-btn">බාගත කරන්න (Download)</button>
+                <button class="btn-secondary" onclick="closeModal()">වසන්න (Close)</button>
+            </div>
+        </div>
+    </div>
+
+    <canvas id="gen-canvas" width="1080" height="1350" style="display: none;"></canvas>
+    
+    <div id="toast" class="toast">පිටපත් කළා! - Copied!</div>
+
+    <!-- Canvas Confetti Library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <script>
+        const wishes = [
+            { 
+                si: "ලැබුවා වූ සිංහල සහ දෙමළ අලුත් අවුරුද්ද ඔබගේ සියලු බලාපොරොත්තු ඉටු කෙරෙන, පවුලේ සැමට සාමය සහ සතුට සපිරි, නිරෝගී වාසනාවන්ත වසරක් වේවායි හදවතින්ම ප්‍රාර්ථනා කරමි!", 
+                en: "As we welcome the Sinhala and Tamil New Year, I heartfully wish that all your aspirations and dreams come to fruition. May this new chapter bring boundless peace, joy, and robust health to you and your entire family." 
+            },
+            { 
+                si: "කොවුල් නාදයත් සමඟ උදාවන මේ අසිරිමත් අලුත් අවුරුද්දේ, ඔබගේ ජීවිතයේ සියලු කරදර බාධක දුරුවී, සෞභාග්‍යයේ දොරටු විවර කරමින්, නව දැක්මකින් යුතුව ඉදිරියටම යෑමට ශක්තිය ධෛර්යය ලැබේවා!", 
+                en: "With the melodious song of the Koha signaling a fresh start, may this auspicious New Year dissolve every obstacle in your path. May it open the doors of prosperity and empower you with the vision and courage to stride forward into a brilliant future." 
+            },
+            { 
+                si: "සූර්යයා මීන රාශියෙන් මේෂ රාශියට සංක්‍රමණය වන්නා සේම, ඔබේ ජීවිතය ද නව ආලෝකයකින් සහ නව ජවයකින් ආලෝකමත් වේවා! අලුත් සිතුවිලි සහ අලුත් අරමුණු සමඟ සාර්ථකත්වයේ හිනිපෙත්තටම යෑමට මේ වසරේ ඔබට වරම් ලැබේවා!", 
+                en: "Just as the sun transitions into Aries bringing light to the world, may your life be illuminated with fresh energy and divine radiance. May this year grant you the grace to reach the pinnacle of success with new thoughts and purposeful goals." 
+            },
+            { 
+                si: "එරබදු මල් සිනහ සලන මේ සුන්දර වසන්තයේ, ඔබේ නිවසත් සිනහවෙන් සහ සතුටෙන් පිරී පවතීවා! කරුණාව, දයාව සහ මනුෂ්‍යත්වය පෙරදැරි කරගත් අර්ථාන්විත සුබ අලුත් අවුරුද්දක් ඔබටත් ඔබේ ආදරණීයයන්ටත් හිමිවේවා!", 
+                en: "In this beautiful spring where the Erabadu flowers bloom with joy, may your home be filled with laughter and warmth. Wishing you and your loved ones a meaningful New Year rooted in kindness, compassion, and shared humanity." 
+            },
+            { 
+                si: "පරණ වසරේ මතකයන් පසෙකලා, අලුත් බලාපොරොත්තු පොදියක් සමඟින් උදාවන මේ වාසනාවන්ත නව වසරේ, ඔබේ ජීවිතයට නව්‍යතාවයක් සහ සැබෑ සැනසීමක් උදා කර ගැනීමට අවශ්‍ය ශක්තිය නොඅඩුව ලැබේවායි පතමි!", 
+                en: "Leaving behind the memories of the past, as you embrace a bundle of new hopes this fortunate New Year, I pray that you find the unwavering strength to bring novelty and true serenity into every aspect of your life." 
+            },
+            { 
+                si: "කෙවුම්, කොකිස් සහ අතිරස සුවඳින් පිරි මේ සොඳුරු අවුරුදු සමයේ, ඔබේ ජීවිතය ද ඒ හා සමාන මිහිරියාවකින් සහ මිත්‍රශීලී බැඳීම්වලින් වර්ණවත් වේවා! පවුලේ සමගිය සහ සාමූහිකත්වය රජයන සුබ අලුත් අවුරුද්දක් වේවා!", 
+                en: "In this festive season filled with the sweet aroma of traditional treats, may your life be equally colored with sweetness and meaningful bonds. Wishing you a New Year where family harmony and togetherness reign supreme." 
+            },
+            { 
+                si: "ලබන්නා වූ නව වසර ඔබගේ ව්‍යාපාරික කටයුතු සහ වෘත්තීය ජීවිතය සාර්ථකත්වයෙන් සාර්ථකත්වයට පත් කරන, ආර්ථික සෞභාග්‍යය සහ පෞද්ගලික දියුණුව නොඅඩුව උදා කරන පින්බර වසරක් වේවායි ප්‍රාර්ථනා කරමි!", 
+                en: "May the dawn of this New Year propel your career and business to new heights of success. Wishing you a year of immense economic prosperity, personal growth, and spiritual fulfillment in every endeavor." 
+            },
+            { 
+                si: "අහස පුරා පිපිරෙන ගිනිකෙළි මෙන් ඔබේ ජීවිතයේ සතුට ද හැමතැනම විහිදී යත්වා! නිරෝගී සුවය උතුම්ම ධනය ලෙස සලකා, කය සහ මනස සුවපත් වන වාසනාවන්ත සුබ අලුත් අවුරුද්දක් ඔබ සැමට හිමිවේවා!", 
+                en: "May the happiness in your life scatter far and wide like the fireworks lighting up the night sky. May you enjoy the ultimate wealth of good health, finding peace and healing for both your body and soul this New Year." 
+            },
+            { 
+                si: "අලුත් ඇඳුම්වලින් හැඩවෙන, නැවුම් හැඟීම්වලින් පිරෙන මේ සැණකෙළි සමයේ, ඔබේ හදවතේ තැන්පත් වී ඇති සියලු සුබ සිහින සැබෑ කර ගැනීමට සොබාදහමේ ආශිර්වාදය නොඅඩුව ලැබේවායි මුළු හදවතින්ම පතමි!", 
+                en: "In this season of renewal and celebration, may the blessings of nature empower you to manifest every positive dream held in your heart. May your spirit be as vibrant as the festive attire of the season." 
+            },
+            { 
+                si: "පැරණි අමනාපකම් දුරු කරමින්, නැවුම් මිත්‍රත්වයේ දෑත් දිගු කරන මේ සුබ මොහොතේ, ඔබ සැමට සාමය සහ සහජීවනය පිරි වාසනාවන්ත වසරක් වේවා! මුළු ලෝකයම ආදරයෙන් වැළඳ ගන්නා බෝධිසත්ව ගුණ පිරි වසරක් වේවා!", 
+                en: "As we bridge old divides and extend the hand of friendship, may this auspicious moment usher in a year of peace and coexistence. Wishing you a year filled with the noble qualities of love and universal brotherhood." 
+            },
+            { 
+                si: "ලිප ගිනි දල්වන නැකතින් ආරම්භ වන ඔබේ නව වසරේ, අතමිට සරුසාර වී, ධන ධාන්‍යයෙන් පිරී ඉතිරී යන සෞභාග්‍යමත් කාල පරිච්ඡේදයක ආරම්භය සනිටුහන් වේවායි මම ඉතසිතින් ප්‍රාර්ථනා කරමි!", 
+                en: "As the hearth is lit at the auspicious hour, marking the beginning of a fresh start, may it symbolize the commencement of a prosperous era where your life overflows with abundance, wealth, and lasting success." 
+            },
+            { 
+                si: "වැඩිහිටියන්ට බුලත් දී වැඳ ආචාර කරන මේ සම්ප්‍රදායික අවුරුද්දේ, ඔබටත් වැඩිහිටි ආශිර්වාදය සහ මඟපෙන්වීම නිරතුරුවම ලැබේවා! ගව කරුණාව සහ සත්ත්ව දයාව පිරි උතුම් මිනිසෙකු ලෙස ජීවත් වීමට වාසනාව ලැබේවා!", 
+                en: "In this traditional year of honoring elders with betel leaves, may you be continuously guided by their wisdom and blessings. May you find the fortune to live as a noble human being, radiating kindness and mercy to all living beings." 
+            },
+            { 
+                si: "ඔබේ අධ්‍යාපනික කටයුතු සහ දැනුම සොයා යන ගමනට නව වසර නව මාවත් විවර කරත්වා! බුද්ධිය සහ ප්‍රඥාව පෙරදැරි කරගෙන ඕනෑම අභියෝගයකට මුහුණ දීමේ ශක්තිය ලැබෙන ජයග්‍රාහී සුබ නව වසරක් වේවා!", 
+                en: "May the New Year open golden pathways for your academic pursuits and your quest for knowledge. Wishing you a victorious year where wisdom and intellect empower you to overcome any challenge with confidence." 
+            },
+            { 
+                si: "සොබාදහමේ අපූර්වත්වය විඳිමින්, ගහ කොළ සමඟ බැඳී සිටින මේ අසිරිමත් අවුරුදු සමයේ, පරිසරයට ආදරය කරන සහ පරිසරය ආරක්ෂා කරන යහපත් පුරවැසියෙකු ලෙස බැබළෙන්නට ඔබට ශක්තිය ලැබේවායි පතමි!", 
+                en: "While enjoying the unique beauty of nature this festive season, may you be inspired to live as a conscious citizen who loves and protects our environment. Wishing you a year of harmony with the world around you." 
+            },
+            { 
+                si: "ඔබේ කලාත්මක හැකියාවන් සහ නිර්මාණශීලීත්වය ලොවටම පෙන්වීමට ලැබෙන වසරක් වේවා! අලුත් අදහස් සහ අලුත් නිපැයුම් සමඟින් ලෝකයම මවිත කරන සාර්ථක නිර්මාණකරුවෙකු වීමට මේ නව වසර ඔබට වරම් දේවා!", 
+                en: "May this be the year where your artistic talents and creative spirit shine brightly for the whole world to see. Wishing you the grace to become a successful creator, amazing everyone with your fresh ideas and innovations." 
+            },
+            { 
+                si: "දුක, කඳුළ සහ වේදනාව පහව ගොස්, ඔබේ ජීවිතය සිනහවෙන් සහ ප්‍රීති ප්‍රමෝදයෙන් පිරී යන, වාසනාවන්ත දෙව්ලොවක් බඳු අසිරිමත් සුබ අලුත් අවුරුද්දක් ඔබ සැමට උදා වේවායි හදවතින්ම පතමි!", 
+                en: "I heartfully pray that all sorrow and pain dissipate, leaving your life filled with laughter and immense delight. May this New Year be as wonderful as a celestial paradise for you and those you cherish." 
+            },
+            { 
+                si: "රටේ සාමය සහ ආරක්ෂාව රජයන, ජාති ආගම් භේදයෙන් තොරව සමගියෙන් ජීවත් විය හැකි, සැබෑ නිදහස භුක්ති විඳින වාසනාවන්ත නව වසරක් රටටත් ලෝකයටත් උදා වේවායි මහත් සේ පතමි!", 
+                en: "I fervently hope for a New Year where national peace and security prevail, and where we can all live in unity regardless of race or religion. May a year of true freedom dawn upon our nation and the entire world." 
+            },
+            { 
+                si: "ඔබේ හෘද සාක්ෂියට එකඟව, අවංකව සහ සෘජුව ජීවත් වීමට අවශ්‍ය ධෛර්යය ලැබෙන, තමන්ගේ සහ අනුන්ගේ ගෞරවය සුරකින උතුම් ගතිපැවතුම්වලින් පිරි සුබ අලුත් අවුරුද්දක් ඔබට හිමිවේවා!", 
+                en: "May you be blessed with a New Year filled with noble conduct, where you find the courage to live honestly and with integrity, respecting both your self-worth and the dignity of others at all times." 
+            },
+            { 
+                si: "උතුරා යන කිරි කළයක් සේ ඔබේ ජීවිතය ද සම්පතින් සහ සෞභාග්‍යයෙන් උතුරා යන, කිසිදු අඩුවක් නැති සර්වප්‍රකාරයෙන්ම සර්ව සම්පූර්ණ අද්විතීය අලුත් අවුරුද්දක් වේවායි ප්‍රාර්ථනා කරමි!", 
+                en: "Just like an overflowing pot of milk symbolizing abundance, may your life overflow with prosperity and wealth. Wishing you a uniquely perfect and complete New Year, free from any lack or want." 
+            },
+            { 
+                si: "ඔබේ සෑම අඩියක්ම ඉදිරියටම තැබෙන, සාර්ථකත්වයේ මල් පාරක් දිගේ ඇවිද යන, සතුටේ සහ සැනසීමේ උල්පතක් බඳු වූ සැබෑම අර්ථාන්විත සුබ අලුත් අවුරුද්දක් ඔබටත් ඔබේ පවුලේ සැමටත් හිමිවේවා!", 
+                en: "Wishing you and your family a truly meaningful New Year that serves as a fountain of happiness and solace. May every step you take be a forward stride along a flowery path of resounding success." 
+            }
+        ];
+
+        function showToast() {
+            const toast = document.getElementById('toast');
+            toast.classList.add('active');
+            setTimeout(() => toast.classList.remove('active'), 2500);
+        }
+
+        function copyWish(text, btn) {
+            navigator.clipboard.writeText(text).then(() => {
+                showToast();
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '✓ Copied';
+                btn.style.background = '#4CAF50';
+                btn.style.color = '#fff';
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.style.background = '';
+                    btn.style.color = '';
+                }, 2000);
+            });
+        }
+
+        // --- Particle System ---
+        const pCanvas = document.getElementById('particle-canvas');
+        const pCtx = pCanvas.getContext('2d');
+        let particles = [];
+
+        function resizeParticles() {
+            pCanvas.width = window.innerWidth;
+            pCanvas.height = window.innerHeight;
+        }
+
+        window.addEventListener('resize', resizeParticles);
+        resizeParticles();
+
+        class Particle {
+            constructor() {
+                this.init();
+            }
+            init() {
+                this.x = Math.random() * pCanvas.width;
+                this.y = Math.random() * pCanvas.height;
+                this.size = Math.random() * 2 + 0.5;
+                this.speedX = Math.random() * 0.5 - 0.25;
+                this.speedY = Math.random() * 0.5 - 0.25;
+                this.opacity = Math.random() * 0.5 + 0.2;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.x < 0 || this.x > pCanvas.width) this.speedX *= -1;
+                if (this.y < 0 || this.y > pCanvas.height) this.speedY *= -1;
+            }
+            draw() {
+                pCtx.beginPath();
+                pCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                pCtx.fillStyle = `rgba(255, 215, 0, ${this.opacity})`;
+                pCtx.fill();
+            }
+        }
+
+        function initParticles() {
+            for (let i = 0; i < 150; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        function animateParticles() {
+            pCtx.clearRect(0, 0, pCanvas.width, pCanvas.height);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            requestAnimationFrame(animateParticles);
+        }
+
+        initParticles();
+        animateParticles();
+        // --- End Particle System ---
+
+        let userProfileImg = null;
+        let userProfileDataUrl = 'template.png'; // Default to template
+        const templateBgImg = new Image();
+        templateBgImg.src = 'template.png';
+
+        function handleProfileUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        userProfileImg = img;
+                        userProfileDataUrl = e.target.result;
+                        // Update main preview
+                        document.getElementById('profile-preview').src = userProfileDataUrl;
+                        // Update all cards background
+                        const cards = document.querySelectorAll('.wish-card');
+                        cards.forEach(card => {
+                            card.style.backgroundImage = `linear-gradient(to bottom, rgba(0,0,0,0.2), rgba(0,0,0,0.9)), url('${userProfileDataUrl}')`;
+                        });
+                        showToast("ඡායාරූපය පසුබිම ලෙස එක් කළා - Photo set as background!");
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function downloadWishCard(btn) {
+            // Get the card containing this button
+            const card = btn.closest('.wish-card');
+            const siText = card.querySelector('.si-content').innerText;
+            const enText = card.querySelector('.en-content').innerText;
+            const accentColor = card.querySelector('.accent-picker').value;
+
+            const originalText = btn.innerHTML;
+            btn.innerHTML = 'සාදමින්...';
+            btn.disabled = true;
+
+            const canvas = document.getElementById('gen-canvas');
+            const ctx = canvas.getContext('2d');
+
+            // 1. Draw User Photo as Background
+            if (userProfileImg) {
+                const aspect = canvas.width / canvas.height;
+                const imgAspect = userProfileImg.width / userProfileImg.height;
+                let drawW, drawH, drawX, drawY;
+
+                if (imgAspect > aspect) {
+                    drawH = canvas.height;
+                    drawW = canvas.height * imgAspect;
+                    drawX = (canvas.width - drawW) / 2;
+                    drawY = 0;
+                } else {
+                    drawW = canvas.width;
+                    drawH = canvas.width / imgAspect;
+                    drawX = 0;
+                    drawY = (canvas.height - drawH) / 2;
+                }
+                ctx.drawImage(userProfileImg, drawX, drawY, drawW, drawH);
+            } else {
+                ctx.drawImage(templateBgImg, 0, 0, canvas.width, canvas.height);
+            }
+
+            // 2. Lighting Bloom at top (Uses Custom Color)
+            const lighting = ctx.createRadialGradient(canvas.width / 2, 150, 0, canvas.width / 2, 150, 400);
+            lighting.addColorStop(0, `${accentColor}4D`); // 30% transparency
+            lighting.addColorStop(1, 'rgba(26, 10, 0, 0)');
+            ctx.fillStyle = lighting;
+            ctx.fillRect(0, 0, canvas.width, 600);
+
+            // 3. Dark Gradient Overlay
+            const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            gradient.addColorStop(0, 'rgba(26, 10, 0, 0.4)');
+            gradient.addColorStop(0.3, 'rgba(26, 10, 0, 0.15)');
+            gradient.addColorStop(1, 'rgba(26, 10, 0, 1)');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // 4. Draw Header Title (Uses Custom Color)
+            ctx.fillStyle = accentColor;
+            ctx.textAlign = 'center';
+            ctx.font = '800 65px "Outfit"';
+            ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
+            ctx.shadowBlur = 20;
+            ctx.fillText("Happy Sinhala & Tamil New Year", canvas.width / 2, 150);
+            ctx.shadowBlur = 0;
+
+            // 5. Draw Wishes Centered
+            ctx.fillStyle = '#FFFFFF';
+            ctx.font = '700 48px "Noto Sans Sinhala"';
+            
+            const wrapText = (text, x, y, maxWidth, lineHeight) => {
+                const words = text.split(' ');
+                let line = '';
+                for(let n = 0; n < words.length; n++) {
+                    let testLine = line + words[n] + ' ';
+                    if (ctx.measureText(testLine).width > maxWidth && n > 0) {
+                        ctx.fillText(line, x, y);
+                        line = words[n] + ' ';
+                        y += lineHeight;
+                    } else {
+                        line = testLine;
+                    }
+                }
+                ctx.fillText(line, x, y);
+                return y + lineHeight;
+            }
+
+            let nextY = wrapText(siText, canvas.width / 2, canvas.height / 2 - 50, 900, 75);
+
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
+            ctx.font = 'italic 400 34px "Outfit"';
+            wrapText(enText, canvas.width / 2, nextY + 40, 950, 52);
+
+            // Process Download
+            const dataUrl = canvas.toDataURL('image/png');
+            const link = document.createElement('a');
+            link.download = `CustomGreeting_${new Date().getTime()}.png`;
+            link.href = dataUrl;
+            link.click();
+
+            setTimeout(() => {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+                showToast("සාර්ථකව සාදා බාගත කළා!");
+            }, 1000);
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            if (msg) toast.innerText = msg;
+            toast.classList.add('active');
+            setTimeout(() => toast.classList.remove('active'), 3000);
+        }
+
+        function updateCardColor(picker) {
+            const card = picker.closest('.wish-card');
+            const color = picker.value;
+            card.style.borderColor = color;
+            card.querySelector('.si-content').style.color = '#fff'; // Keep white
+            card.querySelector('.edit-badge').style.color = color;
+        }
+
+        function openGift() {
+            const box = document.getElementById('mystery-box');
+            const landing = document.getElementById('gift-landing');
+            const instruction = document.getElementById('gift-instruction');
+            const wishesInterface = document.getElementById('wishes-interface');
+            const grid = document.getElementById('wishes-grid');
+
+            box.parentElement.classList.add('shake');
+            
+            setTimeout(() => {
+                confetti({
+                    particleCount: 150,
+                    spread: 70,
+                    origin: { y: 0.6 },
+                    colors: ['#FFD700', '#FF4D00', '#D4AF37', '#ffffff']
+                });
+
+                box.classList.add('explode');
+                instruction.style.opacity = '0';
+                
+                setTimeout(() => {
+                    landing.style.display = 'none';
+                    wishesInterface.style.display = 'block';
+                    
+                    wishes.forEach((wish, index) => {
+                        const card = document.createElement('div');
+                        card.className = 'wish-card';
+                        card.style.backgroundImage = `linear-gradient(to bottom, rgba(0,0,0,0.2), rgba(0,0,0,0.9)), url('${userProfileDataUrl}')`;
+                        card.innerHTML = `
+                            <div class="edit-badge">✐ Click to Edit Text</div>
+                            <div class="si-content" contenteditable="true" style="font-size: 1.2rem; font-weight: 600; color: #fff; text-shadow: 0 2px 10px rgba(0,0,0,0.8);">${wish.si}</div>
+                            <div class="en-content" contenteditable="true" style="font-size: 0.95rem; font-style: italic; color: rgba(255,255,255,0.85); text-shadow: 0 1px 5px rgba(0,0,0,0.8);">${wish.en}</div>
+                            
+                            <div class="card-customizer">
+                                <span class="color-picker-label">Theme Color:</span>
+                                <input type="color" class="accent-picker" value="#FFD700" onchange="updateCardColor(this)">
+                            </div>
+
+                            <div class="wish-actions">
+                                <button class="copy-btn" onclick="copyWish(this.closest('.wish-card').querySelector('.si-content').innerText, this)">
+                                    Copy
+                                </button>
+                                <button class="download-card-btn" onclick="downloadWishCard(this)">
+                                    Save
+                                </button>
+                            </div>
+                        `;
+                        grid.appendChild(card);
+                        
+                        setTimeout(() => {
+                            card.classList.add('visible');
+                        }, index * 100);
+                    });
+                }, 600);
+            }, 500);
+        }
+    </script>
+</body>
+</html>
