@@ -931,13 +931,27 @@
             ctx.fillStyle = gradient;
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // 4. Draw Header Title (Uses Custom Color)
-            ctx.fillStyle = accentColor;
+            // 4. Draw Header Titles (Sinhala & English) with Gradient
             ctx.textAlign = 'center';
-            ctx.font = '800 65px "Outfit"';
-            ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
-            ctx.shadowBlur = 20;
-            ctx.fillText("Happy Sinhala & Tamil New Year", canvas.width / 2, 150);
+            ctx.shadowColor = 'rgba(0, 0, 0, 0.4)';
+            ctx.shadowBlur = 15;
+
+            // Create Gradient based on accentColor
+            const titleGradient = ctx.createLinearGradient(0, 60, 0, 200);
+            titleGradient.addColorStop(0, '#FFFFFF');
+            titleGradient.addColorStop(0.5, accentColor);
+            titleGradient.addColorStop(1, '#FFFFFF');
+
+            ctx.fillStyle = titleGradient;
+
+            // Sinhala Header Title
+            ctx.font = '700 58px "Noto Sans Sinhala"';
+            ctx.fillText("සුබ අලුත් අවුරුද්දක් වේවා!..", canvas.width / 2, 100);
+
+            // English Header Title
+            ctx.font = '800 54px "Outfit"';
+            ctx.fillText("Happy Sinhala & Tamil New Year", canvas.width / 2, 180);
+
             ctx.shadowBlur = 0;
 
             // 5. Draw Wishes Centered
